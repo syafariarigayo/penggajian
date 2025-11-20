@@ -44,6 +44,7 @@
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item" href="<?php echo base_url('admin/data_absensi') ?>">Data Absensi</a>
+            <a class="collapse-item" href="<?php echo base_url('admin/penilaian_karyawan') ?>">Penilaian Karyawan</a>
             <a class="collapse-item" href="<?php echo base_url('admin/potongan_gaji') ?>">Setting Potongan Gaji</a>
             <a class="collapse-item" href="<?php echo base_url('admin/data_penggajian') ?>">Data Gaji</a>
           </div>
@@ -60,6 +61,7 @@
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item" href="<?php echo base_url('admin/laporan_gaji') ?>">Laporan Gaji</a>
             <a class="collapse-item" href="<?php echo base_url('admin/laporan_absensi') ?>">Laporan Absensi</a>
+            <a class="collapse-item" href="<?php echo base_url('admin/penilaian_karyawan/laporan_penilaian') ?>">Laporan Penilaian</a>
             <a class="collapse-item" href="<?php echo base_url('admin/slip_gaji') ?>">Slip Gaji</a>
           </div>
         </div>
