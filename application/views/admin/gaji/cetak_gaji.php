@@ -76,7 +76,7 @@
 			<tr>
 				<td></td>
 				<td width="200px">
-					<p>Yogyakarta, <?php echo date("d M Y") ?> <br> Finance</p>
+					<p>Aceh Tengah, <?php echo date("d M Y") ?> <br> Finance</p>
 					<br>
 					<br>
 					<p>_____________________</p>
