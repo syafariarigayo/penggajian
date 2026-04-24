@@ -2,7 +2,7 @@
       <footer class="sticky-footer">
         <div class="container my-auto">
           <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Syafari ||</span>
+            <span>Copyright &copy; Syafari 2026</span>
           </div>
         </div>
       </footer>
