@@ -39,7 +39,7 @@ issues, as well as missing features.
 Installation
 ************
 
-Please see the `installation section <https://codeigniter.com/user_guide/installation/index.html>`_
+Please see the `installation section <https://codeigniter.com/user_guide/installation/suppresshydrationwarning>`_
 of the CodeIgniter User Guide.
 
 *******
