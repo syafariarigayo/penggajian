@@ -3,14 +3,14 @@
     <h1 class="h3 mb-0 text-gray-800"><?php echo $title?></h1>
   </div>
 
-  <div class="alert alert-info">
-    <i class="fas fa-school"></i>
-    <strong>Unit:</strong> <?php echo $nama_unit?>
+  <div class="mb-3">
+    <a class="btn btn-sm btn-success" href="<?php echo base_url('admin/data_pegawai/tambah_data') ?>">
+      <i class="fas fa-plus"></i> Tambah Pegawai
+    </a>
+    <span class="ml-3 text-muted">
+      <i class="fas fa-school"></i> Unit: <strong><?php echo $nama_unit?></strong>
+    </span>
   </div>
-
-  <a class="btn btn-sm btn-success mb-3" href="<?php echo base_url('admin/data_pegawai/tambah_data') ?>">
-    <i class="fas fa-plus"></i> Tambah Pegawai
-  </a>
 
   <?php echo $this->session->flashdata('pesan')?>
 </div>
@@ -29,36 +29,38 @@
               <th class="text-center">Unit</th>
               <th class="text-center">Jenis Kelamin</th>
               <th class="text-center">Status</th>
+              <th class="text-center">Tanggal Masuk</th>
               <th class="text-center">Aksi</th>
             </tr>
           </thead>
           <tbody>
-            <?php $no=1; foreach($pegawai as $p) : ?>
+            <?php $no = 1; foreach($pegawai as $p) : ?>
             <tr>
-              <td class="text-center"><?php echo $no++?></td>
-              <td class="text-center"><?php echo $p->nik?></td>
-              <td><?php echo $p->nama_pegawai?></td>
-              <td class="text-center"><?php echo $p->jabatan?></td>
+              <td class="text-center"><?php echo $no++ ?></td>
+              <td class="text-center"><?php echo $p->nik ?></td>
+              <td><?php echo $p->nama_pegawai ?></td>
+              <td class="text-center"><?php echo $p->jabatan ?></td>
               <td class="text-center">
-                <span class="badge badge-info"><?php echo $p->unit?></span>
+                <?php echo isset($p->unit) ? $p->unit : '-' ?>
               </td>
-              <td class="text-center"><?php echo $p->jenis_kelamin?></td>
+              <td class="text-center"><?php echo $p->jenis_kelamin ?></td>
               <td class="text-center">
-                <span class="badge badge-<?php echo ($p->status == 'Karyawan Tetap') ? 'success' : 'warning'?>">
-                  <?php echo $p->status?>
-                </span>
+                <?php if($p->status == 'Karyawan Tetap'): ?>
+                  <span class="badge badge-success"><?php echo $p->status?></span>
+                <?php else: ?>
+                  <span class="badge badge-warning"><?php echo $p->status?></span>
+                <?php endif; ?>
               </td>
+              <td class="text-center"><?php echo $p->tanggal_masuk ?></td>
               <td class="text-center">
                 <a class="btn btn-sm btn-info" href="<?php echo base_url('admin/data_pegawai/update_data/'.$p->id_pegawai) ?>">
                   <i class="fas fa-edit"></i>
                 </a>
-                <?php if($hak_akses == 1): ?>
-                <a onclick="return confirm('Yakin hapus data ini?')"
+                <a onclick="return confirm('Yakin hapus data pegawai ini?')"
                    class="btn btn-sm btn-danger"
                    href="<?php echo base_url('admin/data_pegawai/delete_data/'.$p->id_pegawai) ?>">
                   <i class="fas fa-trash"></i>
                 </a>
-                <?php endif; ?>
               </td>
             </tr>
             <?php endforeach; ?>
