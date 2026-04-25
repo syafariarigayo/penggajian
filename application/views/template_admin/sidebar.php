@@ -77,10 +77,15 @@
         </a>
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Proses Gaji:</h6>
+            <h6 class="collapse-header">Absensi:</h6>
             <a class="collapse-item" href="<?php echo base_url('admin/data_absensi') ?>">
               <i class="fas fa-clipboard-check"></i> Data Absensi
             </a>
+            <a class="collapse-item" href="<?php echo base_url('admin/absensi_fingerprint') ?>">
+              <i class="fas fa-fingerprint"></i> Absensi Fingerprint
+            </a>
+            <div class="collapse-divider"></div>
+            <h6 class="collapse-header">Proses Gaji:</h6>
             <a class="collapse-item" href="<?php echo base_url('admin/penilaian_karyawan') ?>">
               <i class="fas fa-star"></i> Penilaian Karyawan
             </a>
@@ -202,10 +207,8 @@
             <li class="nav-item dropdown no-arrow mx-1">
               <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-bell fa-fw"></i>
-                <!-- Counter - Alerts -->
                 <span class="badge badge-danger badge-counter">
                   <?php 
-                  // Count pending items
                   $bulan_ini = date('m').date('Y');
                   $pending_absensi = $this->db->query("SELECT COUNT(DISTINCT p.nik) as total 
                     FROM data_pegawai p 
@@ -217,11 +220,8 @@
                   ?>
                 </span>
               </a>
-              <!-- Dropdown - Alerts -->
               <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
-                <h6 class="dropdown-header">
-                  Notifikasi
-                </h6>
+                <h6 class="dropdown-header">Notifikasi</h6>
                 <?php if($pending_absensi > 0): ?>
                 <a class="dropdown-item d-flex align-items-center" href="<?php echo base_url('admin/data_absensi')?>">
                   <div class="mr-3">
@@ -258,7 +258,6 @@
                 </span>
                 <img class="img-profile rounded-circle" src="<?php echo base_url('photo/').$this->session->userdata('photo') ?>">
               </a>
-              <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
                 <a class="dropdown-item" href="<?php echo base_url('admin/dashboard')?>">
                   <i class="fas fa-tachometer-alt fa-sm fa-fw mr-2 text-gray-400"></i>
