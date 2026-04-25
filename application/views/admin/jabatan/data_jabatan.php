@@ -1,48 +1,94 @@
-<div class="container-fluid">
-  <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800"><?php echo $title?></h1>
-  </div>
-  <a class="btn btn-sm btn-success mb-3" href="<?php echo base_url('admin/data_jabatan/tambah_data') ?>"><i class="fas fa-plus"></i> Tambah Jabatan</a>
-  <?php echo $this->session->flashdata('pesan')?>
-</div>
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
 
-<div class="container-fluid">
-  <div class="card shadow mb-4">
-   <div class="card-body">
-     <div class="table-responsive">
-       <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-         <thead class="thead-dark">
-           <tr>
-              <th class="text-center">No</th>
-              <th class="text-center">Nama Jabatan</th>
-              <th class="text-center">Gaji Pokok</th>
-              <th class="text-center">Tunjangan Transport</th>
-              <th class="text-center">Uang Makan</th>
-              <th class="text-center">Total</th>
-              <th class="text-center">Actions</th>
-           </tr>
-         </thead>
-         <tbody>
-           <?php $no=1; foreach($jabatan as $j) : ?>
-            <tr>
-              <td class="text-center"><?php echo $no++ ?></td>
-              <td class="text-center"><?php echo $j->nama_jabatan ?></td>
-              <td class="text-center">Rp. <?php echo number_format($j->gaji_pokok,0,',','.')?></td>
-              <td class="text-center">Rp. <?php echo number_format($j->tj_transport,0,',','.')?></td>
-              <td class="text-center">Rp. <?php echo number_format($j->uang_makan,0,',','.')?></td>
-              <td class="text-center">Rp. <?php echo number_format($j->gaji_pokok + $j->tj_transport + $j->uang_makan,0,',','.')?></td>
-              
-              <td>
-                <center>
-                  <a class="btn btn-sm btn-info" href="<?php echo base_url('admin/data_jabatan/update_data/'.$j->id_jabatan) ?>"><i class="fas fa-edit"></i></a>
-                  <a onclick="return confirm('Yakin Hapus?')" class="btn btn-sm btn-danger" href="<?php echo base_url('admin/data_jabatan/delete_data/'.$j->id_jabatan) ?>"><i class="fas fa-trash"></i></a>
-                </center>
-              </td>
-            </tr>
-          <?php endforeach; ?>
-         </tbody>
-       </table>
-     </div>
-   </div>
-  </div>
-</div>
+class Data_Absensi extends MY_Controller {
+
+    public function __construct(){
+        parent::__construct();
+        $this->cek_admin();
+    }
+
+    public function index()
+    {
+        $data['title'] = "Data Absensi Pegawai";
+        $my_unit       = $this->get_my_unit();
+
+        if(isset($_GET['bulan']) && $_GET['bulan'] != '' && isset($_GET['tahun']) && $_GET['tahun'] != '') {
+            $bulan = $_GET['bulan'];
+            $tahun = $_GET['tahun'];
+        } else {
+            $bulan = date('m');
+            $tahun = date('Y');
+        }
+        $bulantahun  = $bulan . $tahun;
+        $unit_filter = $my_unit ? "AND dp.unit = '$my_unit'" : "";
+
+        $data['absensi'] = $this->db->query(
+            "SELECT dk.*, dp.nama_pegawai, dp.jenis_kelamin, dp.jabatan, dj.nama_jabatan
+             FROM data_kehadiran dk
+             INNER JOIN data_pegawai dp ON dk.nik = dp.nik
+             INNER JOIN data_jabatan dj ON dp.jabatan = dj.nama_jabatan
+             WHERE dk.bulan = '$bulantahun' $unit_filter
+             ORDER BY dp.nama_pegawai ASC"
+        )->result();
+
+        $this->load->view('template_admin/header', $data);
+        $this->load->view('template_admin/sidebar');
+        $this->load->view('admin/absensi/data_absensi', $data);
+        $this->load->view('template_admin/footer');
+    }
+
+    public function input_absensi()
+    {
+        if($this->input->post('submit', TRUE) == 'submit') {
+            $post   = $this->input->post();
+            $simpan = array();
+            foreach ($post['bulan'] as $key => $value) {
+                if($post['bulan'][$key] != '' || $post['nik'][$key] != '') {
+                    $simpan[] = array(
+                        'bulan'         => $post['bulan'][$key],
+                        'nik'           => $post['nik'][$key],
+                        'nama_pegawai'  => $post['nama_pegawai'][$key],
+                        'jenis_kelamin' => $post['jenis_kelamin'][$key],
+                        'nama_jabatan'  => $post['nama_jabatan'][$key],
+                        'hadir'         => $post['hadir'][$key],
+                        'sakit'         => $post['sakit'][$key],
+                        'alpha'         => $post['alpha'][$key],
+                    );
+                }
+            }
+            $this->ModelPenggajian->insert_batch('data_kehadiran', $simpan);
+            $this->session->set_flashdata('pesan', '<div class="alert alert-success alert-dismissible fade show" role="alert"><strong>Data berhasil ditambahkan!</strong><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+            redirect('admin/data_absensi');
+        }
+
+        $data['title'] = "Form Input Absensi";
+        $my_unit       = $this->get_my_unit();
+
+        if(isset($_GET['bulan']) && $_GET['bulan'] != '' && isset($_GET['tahun']) && $_GET['tahun'] != '') {
+            $bulan = $_GET['bulan'];
+            $tahun = $_GET['tahun'];
+        } else {
+            $bulan = date('m');
+            $tahun = date('Y');
+        }
+        $bulantahun  = $bulan . $tahun;
+        $unit_filter = $my_unit ? "AND dp.unit = '$my_unit'" : "";
+
+        $data['input_absensi'] = $this->db->query(
+            "SELECT dp.*, dj.nama_jabatan
+             FROM data_pegawai dp
+             INNER JOIN data_jabatan dj ON dp.jabatan = dj.nama_jabatan
+             WHERE NOT EXISTS (
+                 SELECT * FROM data_kehadiran
+                 WHERE bulan = '$bulantahun' AND dp.nik = data_kehadiran.nik
+             ) $unit_filter
+             ORDER BY dp.nama_pegawai ASC"
+        )->result();
+
+        $this->load->view('template_admin/header', $data);
+        $this->load->view('template_admin/sidebar');
+        $this->load->view('admin/absensi/tambah_dataAbsensi', $data);
+        $this->load->view('template_admin/footer');
+    }
+}
